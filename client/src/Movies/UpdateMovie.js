@@ -8,8 +8,11 @@ const UpdateMovie = (props) => {
     const [movie, setMovie] = useState({
         title: "",
         director: "",
-        metascore: ""
+        metascore: "",
+        stars: []
     })
+
+    const [newStar, setNewStar] = useState("")
     useEffect(() => {
         axios.get(`http://localhost:5000/api/movies/${id}`)
             .then(res => setMovie(res.data))
@@ -33,13 +36,34 @@ const UpdateMovie = (props) => {
             })
             .catch(res => console.log(res))
     }
+
+    const deleteStar = oldStar => {
+        let newStars = movie.stars.filter(star => star !== oldStar)
+        setMovie({...movie, stars: newStars })
+    }
+
+    const addStar = star => {
+        movie.stars.push(star)
+    }
     return (
         <div>
             <form onSubmit={e => handleSubmit(e)}>
                 <input name="title" value={movie.title} onChange={e => handleChanges(e)}/>
                 <input name="director" value={movie.director} onChange={e => handleChanges(e)}/>
                 <input type="number" name="metascore" value={movie.metascore} onChange={e => handleChanges(e)}/>
-                <button>Update Movie</button>
+                <div>
+                    <h2>Stars:</h2>
+                    <h4>Add New Star</h4>
+                    <input name="new-star" value={newStar} onChange={e => setNewStar(e.target.value)}/>
+                    <button onClick={() => addStar(newStar)}>Add Star</button>
+                    {movie.stars ? movie.stars.map((star, i) => {
+                        return <div key={i}>
+                            <h3>{star}</h3>
+                            <button onClick={() => deleteStar(star)}>Delete Star</button>
+                        </div>
+                    }) : null}
+                </div>
+                <button type="submit">Update Movie</button>
             </form>
         </div>
     )
