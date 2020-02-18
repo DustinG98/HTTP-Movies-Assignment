@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import axios from 'axios'
 import {useHistory} from 'react-router-dom'
 
-const UpdateMovie = (props) => {
-    const { id } = props.match.params;
+const AddMovie = (props) => {
     const history = useHistory();
     const [movie, setMovie] = useState({
         title: "",
@@ -13,11 +12,6 @@ const UpdateMovie = (props) => {
     })
 
     const [newStar, setNewStar] = useState("")
-    useEffect(() => {
-        axios.get(`http://localhost:5000/api/movies/${id}`)
-            .then(res => setMovie(res.data))
-            .catch(err => console.log(err))
-    }, [id])
 
     const handleChanges = e => {
         setMovie({ ...movie, [e.target.name]: e.target.value })
@@ -25,7 +19,7 @@ const UpdateMovie = (props) => {
 
     const handleSubmit = e => {
         e.preventDefault();
-        axios.put(`http://localhost:5000/api/movies/${id}`, movie)
+        axios.post(`http://localhost:5000/api/movies`, movie)
             .then(() => {
                 setMovie({
                     title: "",
@@ -47,21 +41,12 @@ const UpdateMovie = (props) => {
         newStars.push(star)
         setMovie({ ...movie, stars: newStars })
     }
-
-    const deleteMovie = async () => {
-       await axios.delete(`http://localhost:5000/api/movies/${id}`)
-          .then(res => {
-              console.log(res)
-              history.push('/')
-            })
-          .catch(err => console.log(err))
-    }
     return (
         <div>
             <form onSubmit={e => handleSubmit(e)}>
-                <input name="title" value={movie.title} onChange={e => handleChanges(e)}/>
-                <input name="director" value={movie.director} onChange={e => handleChanges(e)}/>
-                <input type="number" name="metascore" value={movie.metascore} onChange={e => handleChanges(e)}/>
+                <input name="title" value={movie.title} onChange={e => handleChanges(e)} placeholder="Title"/>
+                <input name="director" value={movie.director} onChange={e => handleChanges(e)} placeholder="Director"/>
+                <input type="number" name="metascore" value={movie.metascore} onChange={e => handleChanges(e)} placeholder="Metascore"/>
                 <div>
                     <h2>Stars:</h2>
                     <h4>Add New Star</h4>
@@ -74,11 +59,10 @@ const UpdateMovie = (props) => {
                         </div>
                     }) : null}
                 </div>
-                <button type="submit">Update Movie</button>
-                <button type="button" onClick={() => deleteMovie()}>Delete Movie</button>
+                <button type="submit">Add Movie</button>
             </form>
         </div>
     )
 }
 
-export default UpdateMovie
+export default AddMovie

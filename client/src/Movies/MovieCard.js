@@ -1,11 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 const MovieCard = props => {
   const { title, director, metascore, stars, id } = props.movie;
+  const history = useHistory()
+
   return (
-    <div className="movie-card">
-      <h2>{title}</h2>
+    <div className="movie-card" >
+      <h2 onClick={() => history.push(`/movies/${id}`)}>{title}</h2>
       <div className="movie-director">
         Director: <em>{director}</em>
       </div>
